@@ -1,0 +1,33 @@
+---
+- name: Install pip (Ubuntu)
+  when: ansible_distribution == 'Ubuntu'
+  ansible.builtin.apt:
+    pkg:
+      - python3-pip
+
+- name: Install pip (CentOS)
+  when: ansible_distribution == 'CentOS'
+  block:
+#    - name: Install pip3 (CentOS 8)
+#      when: ansible_distribution_major_version == "8"
+#      ansible.builtin.yum:
+#        name:
+#          - python3-pip
+
+    - name: Install epel-release (CentOS 7)
+      when: ansible_distribution_major_version == "7"
+      ansible.builtin.yum:
+        name:
+          - epel-release
+
+    - name: Install pip3
+#      when: ansible_distribution_major_version == "7"
+      ansible.builtin.yum:
+        name:
+          - python3-pip
+
+- name: Install pip-kubernetes
+  ansible.builtin.pip:
+    name:
+      - kubernetes
+    executable: pip3

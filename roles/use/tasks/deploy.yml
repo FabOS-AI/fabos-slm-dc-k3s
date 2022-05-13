@@ -1,0 +1,27 @@
+---
+- name: "Check required variables"
+  assert:
+    that: "{{ item.name }} is defined"
+    fail_msg: "Missing variable '{{ item.name }}': {{ item.description }}"
+  with_items:
+    - { name: "service_id",             description: "Id of the service instance that will be deployed." }
+    - { name: "definitions",             description: "Content of object definition." }
+
+- name: Create namespace
+  kubernetes.core.k8s:
+    name: "{{ service_id }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+  register: create_ns
+  until: not create_ns.failed
+  retries: 10
+
+- name: Deploy
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ item }}"
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+    namespace: "{{ service_id }}"
+  loop: "{{ definitions }}"

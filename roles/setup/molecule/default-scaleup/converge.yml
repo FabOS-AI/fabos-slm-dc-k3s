@@ -1,0 +1,34 @@
+---
+- name: Converge - Gather facts
+  hosts: all:!hypervisor
+  gather_facts: no
+  vars:
+    ansible_libvirt_uri: >-
+      {% if hostvars[groups['hypervisor'] | first].ansible_connection == 'ssh' %}qemu+ssh://{{ hostvars[groups['hypervisor'] | first].ansible_user }}@{{ hostvars[groups['hypervisor'] | first].ansible_host }}/system{% else %}qemu:///system{% endif %}
+    ansible_connection: "community.libvirt.libvirt_qemu"
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Gather Facts
+      ansible.builtin.setup:
+        gather_subset:
+          - min
+          - network
+      register: setup_result
+      until: setup_result.failed != true
+      retries: 10
+
+- name: Converge - Scale Up
+  hosts: scale_up_host
+  gather_facts: no
+  vars:
+    ansible_libvirt_uri: >-
+      {% if hostvars[groups['hypervisor'] | first].ansible_connection == 'ssh' %}qemu+ssh://{{ hostvars[groups['hypervisor'] | first].ansible_user }}@{{ hostvars[groups['hypervisor'] | first].ansible_host }}/system{% else %}qemu:///system{% endif %}
+    ansible_connection: "community.libvirt.libvirt_qemu"
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include K3s setup setup_agent.yml
+      include_role:
+        name: setup
+        tasks_from: setup_agent.yml

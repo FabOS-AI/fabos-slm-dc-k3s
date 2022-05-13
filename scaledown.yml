@@ -1,0 +1,34 @@
+---
+- name: "Create inventory with target host(s)"
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - include_role:
+        name: inventory_helper
+        tasks_from: create_inventory.yml
+
+    - include_role:
+        name: inventory_helper
+        tasks_from: create_scale_down_inventory.yml
+
+- name: Scale Down (Agent)
+  hosts: scale_down_host
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Include K3s uninstall.yml
+      include_role:
+        name: setup
+        tasks_from: uninstall.yml
+
+- name: Scale Down (Server)
+  hosts: k3s_server
+  run_once: yes
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Include K3s remove_node.yml
+      include_role:
+        name: setup
+        tasks_from: remove_node.yml

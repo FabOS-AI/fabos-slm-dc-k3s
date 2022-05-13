@@ -1,0 +1,27 @@
+---
+- name: "Create inventory with target host(s)"
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - include_role:
+        name: inventory_helper
+        tasks_from: create_inventory.yml
+
+- name: "Gather facts"
+  hosts: k3s_server
+  gather_facts: yes
+  become: yes
+  tasks:
+    - debug:
+        msg: Gather facts of k3s server
+
+- name: Scale Up
+  hosts: k3s_agent
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Include K3s setup setup_agent.yml
+      include_role:
+        name: setup
+        tasks_from: setup_agent.yml

@@ -1,0 +1,38 @@
+---
+- name: Converge - Gather facts
+  hosts: all:!hypervisor
+  gather_facts: no
+  vars:
+    ansible_libvirt_uri: >-
+      {% if hostvars[groups['hypervisor'] | first].ansible_connection == 'ssh' %}qemu+ssh://{{ hostvars[groups['hypervisor'] | first].ansible_user }}@{{ hostvars[groups['hypervisor'] | first].ansible_host }}/system{% else %}qemu:///system{% endif %}
+    ansible_connection: "community.libvirt.libvirt_qemu"
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Gather Facts
+      ansible.builtin.setup:
+        gather_subset:
+          - min
+          - network
+      register: setup_result
+      until: setup_result.failed != true
+      retries: 10
+
+- name: Converge - Deploy
+  hosts: k3s_server
+  run_once: yes
+  gather_facts: no
+  vars:
+    ansible_libvirt_uri: >-
+      {% if hostvars[groups['hypervisor'] | first].ansible_connection == 'ssh' %}qemu+ssh://{{ hostvars[groups['hypervisor'] | first].ansible_user }}@{{ hostvars[groups['hypervisor'] | first].ansible_host }}/system{% else %}qemu:///system{% endif %}
+    ansible_connection: "community.libvirt.libvirt_qemu"
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include vars file
+      include_vars:
+        file: ./vars/main.yml
+    - name: Include K3s deploy.yml
+      include_role:
+        name: use
+        tasks_from: deploy.yml

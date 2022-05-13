@@ -1,0 +1,18 @@
+---
+- name: Include tasks for installing packages
+  include_tasks: helper/install_packages.yml
+
+- name: Include tasks file for downloading install script
+  include_tasks: helper/download_install_script.yml
+
+- name: Check if token file exists
+  ansible.builtin.stat:
+    path: /var/lib/rancher/k3s/server/node-token
+  register: token_file
+
+- name: Run install script
+  ansible.builtin.shell: "{{ install_script_dest }}"
+  register: output_install
+  when: not token_file.stat.exists
+  environment:
+    INSTALL_K3S_EXEC: server --cluster-init

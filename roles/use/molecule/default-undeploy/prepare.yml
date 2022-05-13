@@ -1,0 +1,6 @@
+---
+- name: Import Playbook for setting up docker swarm
+  import_playbook: ../../../setup/molecule/default-install/converge.yml
+
+- name: Import Playbook for starting service in swarm
+  import_playbook: ../default-deploy/converge.yml

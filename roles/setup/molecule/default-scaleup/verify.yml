@@ -1,0 +1,22 @@
+---
+- name: Verify - K3s
+  hosts: k3s_server[0]
+  gather_facts: no
+  vars:
+    ansible_libvirt_uri: >-
+      {% if hostvars[groups['hypervisor'] | first].ansible_connection == 'ssh' %}qemu+ssh://{{ hostvars[groups['hypervisor'] | first].ansible_user }}@{{ hostvars[groups['hypervisor'] | first].ansible_host }}/system{% else %}qemu:///system{% endif %}
+    ansible_connection: "community.libvirt.libvirt_qemu"
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Get Cluster info
+      ansible.builtin.shell: "/usr/local/bin/kubectl get node"
+      register: output_get_node
+      until: output_get_node.stdout_lines | length == 6
+      retries: 60
+
+    - debug:
+        var: output_get_node.stdout_lines
+
+    - assert:
+        that: output_get_node.stdout_lines | length == 6

@@ -1,0 +1,57 @@
+- name: Get config from environment variables
+  set_fact:
+    consul_url: "{{ lookup('env', 'CONSUL_URL') }}"
+    consul_token: "{{ lookup('env', 'CONSUL_TOKEN') }}"
+    vault_url: "{{ lookup('env', 'VAULT_URL') }}"
+    vault_approle_role_id: "{{ lookup('env', 'VAULT_APPROLE_ROLE_ID') }}"
+    vault_approle_secret_id: "{{ lookup('env', 'VAULT_APPROLE_SECRET_ID') }}"
+  no_log: true
+- assert:
+    that:
+#      - resource_id
+      - service_name
+      - (consul_url is defined) and (consul_url|length > 0)
+      - (consul_token is defined) and (consul_token|length > 0)
+      - (vault_url is defined) and (vault_url|length > 0)
+      - (vault_approle_role_id is defined) and (vault_approle_role_id|length > 0)
+      - (vault_approle_secret_id is defined) and (vault_approle_secret_id|length > 0)
+
+- set_fact:
+    vault_lookup_base_info: "url={{ vault_url }} auth_method=approle role_id={{ vault_approle_role_id }} secret_id={{ vault_approle_secret_id }}"
+
+#- set_fact:
+#    filter_exp: "{{ 'ID==\"' + resource_id + '\"' | urlencode() }}"
+#- name: "Get Node info of resource with id '{{ resource_id }}'"
+#  uri:
+#    url: "{{ consul_url }}/v1/catalog/nodes?filter={{ filter_exp }}"
+#    method: GET
+#    status_code: 200
+#    validate_certs: no
+#    headers:
+#      Authorization: "Bearer {{ consul_token }}"
+#  register: output_get_node
+#- set_fact:
+#    node_info: "{{ output_get_node.json | first }}"
+
+- name: "Get Service nodes of '{{ service_name }}'"
+  uri:
+    url: "{{ consul_url }}/v1/catalog/service/{{ service_name }}"
+    method: GET
+    status_code: 200, 404
+    validate_certs: no
+    headers:
+      Authorization: "Bearer {{ consul_token }}"
+  register: output_get_service_nodes
+  no_log: true
+
+- name: Set Service Node Array
+  set_fact:
+    service_nodes: "{{ output_get_service_nodes.json | default([]) }}"
+
+- name: Set Service UUID
+  set_fact:
+    service_id: "{{ (service_nodes | first).ServiceID }}"
+
+- name: Add Nodes to inventory
+  include_tasks: helper/add_resource_to_inventory.yml
+  loop: "{{ service_nodes }}"

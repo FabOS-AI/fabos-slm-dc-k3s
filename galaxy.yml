@@ -1,0 +1,29 @@
+namespace: fabos
+
+name: k3s
+
+version: 1.0.0
+
+readme: README.md
+
+authors:
+- Benjamin Goetz - Fraunhofer IPA
+
+description: The collection provides playbooks for installing and uninstalling of k3s on target hosts, scaling up and down of agent nodes (see "setup" role) and deploying and undeploying of container based on docker-compose files (see "use" role). The additional "inventory_helper" role helps to create an inventory based on information available in the context of the FabOS Service Lifecycle Management (SLM).
+
+license:
+- MIT
+
+license_file: 'LICENSE'
+
+tags: [k3s, docker-compose, install, uninstall, scale up, scale down, deploy, undeploy]
+
+dependencies: {}
+
+repository: http://example.com/repository
+documentation: http://docs.example.com
+homepage: http://example.com
+issues: http://example.com/issue/tracker
+
+build_ignore: []
+

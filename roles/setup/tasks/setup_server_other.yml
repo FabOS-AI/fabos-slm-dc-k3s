@@ -1,0 +1,31 @@
+---
+- name: Include tasks file for downloading install script
+  include_tasks: helper/download_install_script.yml
+
+- name: Include tasks file for downloading install script
+  include_tasks: helper/download_install_script.yml
+
+- name: Lookup Cluster token
+  ansible.builtin.slurp:
+    src: "{{ token_file_dest }}"
+  delegate_to: "{{ groups['k3s_server'] | first }}"
+  register: node_token_slurp
+
+- set_fact:
+    ip_first_server: "{{ hostvars[ (groups['k3s_server'] | first) ]['ansible_default_ipv4']['address'] }}"
+    k3s_token: "{{ node_token_slurp['content'] | b64decode | trim }}"
+
+- name: Check if token file exists
+  ansible.builtin.stat:
+    path: "{{ token_file_dest }}"
+  register: token_file
+
+- name: Run install script
+  ansible.builtin.shell: "{{ install_script_dest }} "
+  register: output_install
+  when: not token_file.stat.exists
+  environment:
+    K3S_URL: "https://{{ ip_first_server }}:6443"
+    K3S_TOKEN: "{{ k3s_token }}"
+    INSTALL_K3S_EXEC: server
+  until: output_install.rc == 0

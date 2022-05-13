@@ -1,0 +1,14 @@
+---
+- name: Cordon node
+  ansible.builtin.shell: "/usr/local/bin/kubectl cordon {{ item }}"
+  loop: "{{ groups['scale_down_host'] }}"
+  register: output_cordon
+  until: output_cordon.rc == 0
+  retries: 10
+
+- name: Delete node
+  ansible.builtin.shell: "/usr/local/bin/kubectl delete node {{ item }}"
+  loop: "{{ groups['scale_down_host'] }}"
+  register: output_delete
+  until: output_delete.rc == 0
+  retries: 10

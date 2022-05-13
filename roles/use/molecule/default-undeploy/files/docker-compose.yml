@@ -1,0 +1,19 @@
+---
+version: '3'
+services:
+  service:
+    image: 'mariadb:10.6.4'
+    environment:
+      - MARIADB_USER=myuser
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=no
+      - MARIADB_DATABASE=myuser
+      - MARIADB_ROOT_PASSWORD=rootPass
+      - MARIADB_PASSWORD=password123
+    ports:
+      - '4406:3306'
+    restart: always
+    volumes:
+      - 'mariadb_data:/var/lib/mysql'
+volumes:
+  mariadb_data:
+    driver: local

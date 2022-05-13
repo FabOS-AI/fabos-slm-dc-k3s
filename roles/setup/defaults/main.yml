@@ -1,0 +1,7 @@
+---
+# defaults file for setup
+install_script_dest: /tmp/install-k3s.sh
+uninstall_script_server_dest: /usr/local/bin/k3s-uninstall.sh
+uninstall_script_agent_dest: /usr/local/bin/k3s-agent-uninstall.sh
+token_base_path: /var/lib/rancher/k3s
+token_file_dest: "{{ token_base_path }}/server/node-token"
