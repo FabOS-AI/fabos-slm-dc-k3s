@@ -1,0 +1,33 @@
+---
+- name: Converge - Setup first K3s Server
+  hosts: k3s_server[0]
+  gather_facts: yes
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include K3s setup_server_first.yml
+      include_role:
+        name: setup
+        tasks_from: setup_server_first.yml
+
+- name: Converge - Setup other K3s Server
+  hosts: k3s_server[1:]
+  gather_facts: yes
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include K3s setup_server_other.yml
+      include_role:
+        name: setup
+        tasks_from: setup_server_other.yml
+
+- name: Converge - Setup Agents
+  hosts: k3s_agent:!scale_up_host
+  gather_facts: yes
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include K3s setup setup_agent.yml
+      include_role:
+        name: setup
+        tasks_from: setup_agent.yml

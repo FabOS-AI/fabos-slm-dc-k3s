@@ -1,0 +1,11 @@
+---
+- name: Converge - Uninstall k3s server
+  hosts: k3s_server:k3s_agent
+  gather_facts: yes
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include K3s uninstall.yml
+      include_role:
+        name: setup
+        tasks_from: uninstall.yml

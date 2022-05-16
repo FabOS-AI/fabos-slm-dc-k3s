@@ -1,0 +1,5 @@
+---
+collections:
+  - name: "https://github.com/FabOS-AI/fabos-slm-dc-docker"
+    type: git
+    version: main

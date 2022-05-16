@@ -1,0 +1,23 @@
+---
+- name: Converge - Scale Down (Agent)
+  hosts: scale_down_host
+  gather_facts: yes
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include K3s uninstall.yml
+      include_role:
+        name: setup
+        tasks_from: uninstall.yml
+
+- name: Converge - Scale Down (Server)
+  hosts: k3s_server
+  run_once: yes
+  gather_facts: yes
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include K3s remove_node.yml
+      include_role:
+        name: setup
+        tasks_from: remove_node.yml

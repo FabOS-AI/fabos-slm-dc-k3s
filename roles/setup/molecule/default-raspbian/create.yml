@@ -1,0 +1,42 @@
+---
+- name: Create
+  hosts: localhost
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
+  become: yes
+  tasks:
+
+    # TODO: Developer must implement and populate 'server' variable
+    - set_fact:
+        server:
+          changed: true
+          results: "{{ molecule_yml.platforms }}"
+
+    - when: server.changed | default(false) | bool
+      block:
+        - name: Populate instance config dict
+          set_fact:
+            instance_conf_dict: {
+              'instance': "{{ item.name }}",
+              'address': "{{ item.address }}",
+              'user': "{{ item.user | default('pi') }}",
+              'password': "{{ item.password | default('') }}",
+              'port': "{{ item.port | default('22') }}",
+              'connection': "{{ item.connection | default('ssh') }}",
+              'identity_file': "{{ item.identity_file | default('') }}", }
+          with_items: "{{ server.results }}"
+          register: instance_config_dict
+
+        - name: Convert instance config dict to a list
+          set_fact:
+            instance_conf: "{{ instance_config_dict.results | map(attribute='ansible_facts.instance_conf_dict') | list }}"
+
+        - name: Dump instance config
+          copy:
+            content: |
+              # Molecule managed
+
+              {{ instance_conf | to_json | from_json | to_yaml }}
+            dest: "{{ molecule_instance_config }}"
+            mode: 0600
+          delegate_to: localhost

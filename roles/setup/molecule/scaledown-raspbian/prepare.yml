@@ -1,0 +1,3 @@
+- import_playbook: ../install-raspbian/converge.yml
+
+- import_playbook: ../scaleup-raspbian/converge.yml

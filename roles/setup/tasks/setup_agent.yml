@@ -1,4 +1,8 @@
 ---
+- name: Create cgroup memory (Raspbian only)
+  when: ansible_lsb.id == 'Raspbian'
+  include_tasks: helper/create_cgroup_memory.yml
+
 - name: Include tasks file for downloading install script
   include_tasks: helper/download_install_script.yml
 

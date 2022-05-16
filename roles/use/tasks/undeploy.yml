@@ -6,10 +6,20 @@
   with_items:
     - { name: "service_id",             description: "Id of the service instance that will be deployed." }
 
+- name: "Get info about namespace '{{ service_id }}'"
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Namespace
+    name: "{{ service_id }}"
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+  register: info_output
+
 - name: Remove namespace
+  when: info_output.resources | length != 0
   kubernetes.core.k8s:
     name: "{{ service_id }}"
     api_version: v1
     kind: Namespace
     state: absent
     kubeconfig: /etc/rancher/k3s/k3s.yaml
+    wait: yes

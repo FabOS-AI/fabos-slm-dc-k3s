@@ -1,0 +1,16 @@
+---
+- name: Converge - Deploy
+  hosts: k3s_server
+  run_once: yes
+  gather_facts: yes
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include vars file
+      include_vars:
+        file: ./vars/main.yml
+
+    - name: Include K3s deploy.yml
+      include_role:
+        name: use
+        tasks_from: deploy.yml

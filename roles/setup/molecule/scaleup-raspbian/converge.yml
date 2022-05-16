@@ -1,0 +1,18 @@
+---
+- name: Converge - Gather Facts
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Get facts
+      ansible.builtin.setup:
+
+- name: Converge - Scale Up
+  hosts: scale_up_host
+  gather_facts: yes
+  become: yes
+  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+  tasks:
+    - name: Include K3s setup setup_agent.yml
+      include_role:
+        name: setup
+        tasks_from: setup_agent.yml

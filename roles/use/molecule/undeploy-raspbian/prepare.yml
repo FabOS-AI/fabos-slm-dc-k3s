@@ -1,0 +1,6 @@
+---
+- name: Do Install of k3s
+  import_playbook: ../../../setup/molecule/install-raspbian/converge.yml
+
+- name: Do Deploy
+  import_playbook: ../deploy-raspbian/converge.yml

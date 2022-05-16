@@ -1,0 +1,49 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: delegated
+platforms:
+  - name: ${RASPI_1_ADDRESS}
+    address: ${RASPI_1_ADDRESS}
+    user: ${RASPI_USER}
+    password: ${RASPI_PASSWORD}
+    groups:
+      - k3s_server
+
+  - name: ${RASPI_2_ADDRESS}
+    address: ${RASPI_2_ADDRESS}
+    user: ${RASPI_USER}
+    password: ${RASPI_PASSWORD}
+    groups:
+      - k3s_server
+
+  - name: ${RASPI_3_ADDRESS}
+    address: ${RASPI_3_ADDRESS}
+    user: ${RASPI_USER}
+    password: ${RASPI_PASSWORD}
+    groups:
+      - k3s_server
+
+  - name: ${RASPI_4_ADDRESS}
+    address: ${RASPI_4_ADDRESS}
+    user: ${RASPI_USER}
+    password: ${RASPI_PASSWORD}
+    groups:
+      - k3s_agent
+
+  - name: ${RASPI_5_ADDRESS}
+    address: ${RASPI_5_ADDRESS}
+    user: ${RASPI_USER}
+    password: ${RASPI_PASSWORD}
+    groups:
+      - k3s_agent
+      - scale_up_host
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../default-raspbian/create.yml
+    prepare: ../install-raspbian/converge.yml
+    destroy: ../default-raspbian/destroy.yml
+verifier:
+  name: ansible
