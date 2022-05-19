@@ -8,6 +8,10 @@
         name: inventory_helper
         tasks_from: create_inventory.yml
 
+    - include_role:
+        name: inventory_helper
+        tasks_from: create_single_host_inventory.yml
+
 - name: "Gather facts"
   hosts: k3s_server
   gather_facts: yes
@@ -17,7 +21,7 @@
         msg: Gather facts of k3s server
 
 - name: Scale Up
-  hosts: k3s_agent
+  hosts: target_host
   gather_facts: yes
   become: yes
   tasks:

@@ -10,10 +10,10 @@
 
     - include_role:
         name: inventory_helper
-        tasks_from: create_scale_down_inventory.yml
+        tasks_from: create_single_host_inventory.yml
 
 - name: Scale Down (Agent)
-  hosts: scale_down_host
+  hosts: target_host
   gather_facts: yes
   become: yes
   tasks:

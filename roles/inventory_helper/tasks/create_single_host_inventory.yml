@@ -46,7 +46,7 @@
 - name: Setup ansible inventory
   add_host:
     name: "{{ ip_address }}"
-    groups: scale_down_host
+    groups: target_host
     ansible_connection: ssh
     ansible_ssh_user: "{{ username }}"
     ansible_ssh_pass: "{{ password }}"
