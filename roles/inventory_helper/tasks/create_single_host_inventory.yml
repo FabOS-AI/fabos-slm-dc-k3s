@@ -38,7 +38,7 @@
 
 - name: Set resource credentials
   set_fact:
-    ip_address: "{{ node_info.Node }}"
+    ip_address: "{{ node_info.Address }}"
     username: "{{ lookup('hashi_vault', '{{ vault_lookup_base_info }} secret=resources/data/{{ resource_id }}:username') }}"
     password: "{{ lookup('hashi_vault', '{{ vault_lookup_base_info }} secret=resources/data/{{ resource_id }}:password') }}"
   no_log: true
