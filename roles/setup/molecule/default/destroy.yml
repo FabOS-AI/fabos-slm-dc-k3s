@@ -1,13 +1,13 @@
 ---
 - name: Destroy
-  hosts: hypervisor
+  hosts: localhost
   gather_facts: false
   no_log: "{{ molecule_no_log }}"
-  become: yes
+  become: no
   tasks:
     # Developer must implement.
     - include_role:
-        name: molecule_libvirt
+        name: molecule_vsphere
         tasks_from: destroy.yml
 
     # Mandatory configuration for Molecule to function.

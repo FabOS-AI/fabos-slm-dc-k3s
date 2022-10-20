@@ -1,14 +1,14 @@
 ---
 - name: Create
-  hosts: hypervisor
-  gather_facts: true
+  hosts: localhost
+  gather_facts: no
   no_log: "{{ molecule_no_log }}"
-  become: yes
+  become: no
   tasks:
 
     # TODO: Developer must implement and populate 'server' variable
     - include_role:
-        name: molecule_libvirt
+        name: molecule_vsphere
         tasks_from: create.yml
 
     - when: server.changed | default(false) | bool
@@ -19,6 +19,7 @@
               'instance': "{{ item.instance }}",
               'address': "{{ item.address }}",
               'user': "{{ item.user | default('') }}",
+              'password': "{{ item.password | default('') }}",
               'port': "{{ item.port | default('') }}",
               'connection': "{{ item.connection | default('') }}",
               'identity_file': "{{ item.identity_file | default('') }}", }
