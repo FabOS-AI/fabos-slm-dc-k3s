@@ -1,6 +1,6 @@
 ---
 roles:
-  - src: "git+https://github.com/FabOS-AI/molecule_libvirt.git"
+  - src: "git+https://github.com/FabOS-AI/molecule_vsphere.git"
     scm: git
-    version: main
-    name: molecule_libvirt
+    version: develop
+    name: molecule_vsphere
