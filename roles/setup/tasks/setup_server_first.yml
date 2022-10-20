@@ -1,6 +1,8 @@
 ---
 - name: Create cgroup memory (Raspbian only)
-  when: ansible_lsb.id == 'Raspbian'
+  when:
+    - ansible_lsb.id is defined
+    - ansible_lsb.id == 'Raspbian'
   include_tasks: helper/create_cgroup_memory.yml
 
 - name: Include tasks for installing packages
