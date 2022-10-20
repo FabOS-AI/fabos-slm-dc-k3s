@@ -17,7 +17,8 @@
   register: token_file
 
 - name: Run install script
-  ansible.builtin.shell: "{{ install_script_dest }}"
+#  ansible.builtin.shell: "{{ install_script_dest }}"
+  ansible.builtin.shell: "sh {{ install_script_dest }}"
   register: output_install
   when: not token_file.stat.exists
   environment:

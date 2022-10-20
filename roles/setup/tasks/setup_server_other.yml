@@ -1,6 +1,8 @@
 ---
 - name: Create cgroup memory (Raspbian only)
-  when: ansible_lsb.id == 'Raspbian'
+  when:
+    - ansible_lsb.id is defined
+    - ansible_lsb.id == 'Raspbian'
   include_tasks: helper/create_cgroup_memory.yml
 
 - name: Include tasks file for downloading install script
@@ -25,7 +27,7 @@
   register: token_file
 
 - name: Run install script
-  ansible.builtin.shell: "{{ install_script_dest }} "
+  ansible.builtin.shell: "sh {{ install_script_dest }} "
   register: output_install
   when: not token_file.stat.exists
   environment:
