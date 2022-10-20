@@ -3,30 +3,25 @@ dependency:
   name: galaxy
 driver:
   name: delegated
-  options:
-    login_cmd_template: 'virsh -c qemu+ssh://${HYPERVISOR_ANSIBLE_USER}@${HYPERVISOR_ANSIBLE_HOST}/system console {instance}'
+
 platforms:
   - name: centos8-1
-    os: centos
-    version: 8
+    template_name: centos-8
     groups:
       - k3s_server
 
   - name: centos8-2
-    os: centos
-    version: 8
+    template_name: centos-8
     groups:
       - k3s_server
 
   - name: centos8-3
-    os: centos
-    version: 8
+    template_name: centos-8
     groups:
       - k3s_server
 
   - name: centos8-4
-    os: centos
-    version: 8
+    template_name: centos-8
     groups:
       - k3s_agent
 provisioner:
@@ -37,15 +32,6 @@ provisioner:
     destroy: ../../../setup/molecule/default/destroy.yml
     converge: ../default-deploy/converge.yml
     verify: ../default-deploy/verify.yml
-  inventory:
-    hosts:
-      hypervisor:
-        hosts:
-          hypervisor-1:
-            ansible_user: ${HYPERVISOR_ANSIBLE_USER}
-            ansible_host: ${HYPERVISOR_ANSIBLE_HOST}
-            ansible_connection: ${HYPERVISOR_ANSIBLE_CONNECTION}
-            ansible_ssh_pass: ${HYPERVISOR_ANSIBLE_PASSWORD}
-            ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
 verifier:
   name: ansible

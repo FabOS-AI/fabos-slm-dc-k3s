@@ -3,7 +3,7 @@
   hosts: k3s_server[0]
   gather_facts: yes
   become: yes
-  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+
   tasks:
     - name: Get Cluster info
       ansible.builtin.shell: "/usr/local/bin/kubectl get node"

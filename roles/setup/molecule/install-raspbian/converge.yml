@@ -3,7 +3,7 @@
   hosts: k3s_server[0]
   gather_facts: yes
   become: yes
-  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+
   tasks:
     - name: Include K3s setup_server_first.yml
       include_role:
@@ -14,7 +14,7 @@
   hosts: k3s_server[1:]
   gather_facts: yes
   become: yes
-  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+
   tasks:
     - name: Include K3s setup_server_other.yml
       include_role:
@@ -25,7 +25,7 @@
   hosts: k3s_agent:!scale_up_host
   gather_facts: yes
   become: yes
-  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+
   tasks:
     - name: Include K3s setup setup_agent.yml
       include_role:

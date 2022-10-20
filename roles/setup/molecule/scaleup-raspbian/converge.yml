@@ -10,7 +10,7 @@
   hosts: scale_up_host
   gather_facts: yes
   become: yes
-  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+
   tasks:
     - name: Include K3s setup setup_agent.yml
       include_role:

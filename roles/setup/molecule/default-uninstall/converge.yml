@@ -1,13 +1,8 @@
 ---
 - name: Converge - Gather facts
-  hosts: all:!hypervisor
+  hosts: all
   gather_facts: no
-  vars:
-    ansible_libvirt_uri: >-
-      {% if hostvars[groups['hypervisor'] | first].ansible_connection == 'ssh' %}qemu+ssh://{{ hostvars[groups['hypervisor'] | first].ansible_user }}@{{ hostvars[groups['hypervisor'] | first].ansible_host }}/system{% else %}qemu:///system{% endif %}
-    ansible_connection: "community.libvirt.libvirt_qemu"
   become: yes
-  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
   tasks:
     - name: Gather Facts
       ansible.builtin.setup:
@@ -21,12 +16,7 @@
 - name: Converge - Uninstall k3s server
   hosts: k3s_server:k3s_agent
   gather_facts: no
-  vars:
-    ansible_libvirt_uri: >-
-      {% if hostvars[groups['hypervisor'] | first].ansible_connection == 'ssh' %}qemu+ssh://{{ hostvars[groups['hypervisor'] | first].ansible_user }}@{{ hostvars[groups['hypervisor'] | first].ansible_host }}/system{% else %}qemu:///system{% endif %}
-    ansible_connection: "community.libvirt.libvirt_qemu"
   become: yes
-  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
   tasks:
     - name: Include K3s uninstall.yml
       include_role:

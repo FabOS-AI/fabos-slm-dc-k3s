@@ -3,7 +3,7 @@
   hosts: scale_down_host
   gather_facts: yes
   become: yes
-  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+
   tasks:
     - name: Include K3s uninstall.yml
       include_role:
@@ -15,7 +15,7 @@
   run_once: yes
   gather_facts: yes
   become: yes
-  serial: "{{ lookup('env', 'ANSIBLE_SERIAL') }}"
+
   tasks:
     - name: Include K3s remove_node.yml
       include_role:
