@@ -6,27 +6,27 @@ driver:
 
 platforms:
   - name: centos8-1
-    template_name: centos-8
+    template_name: centos-stream-8
     groups:
       - k3s_server
 
   - name: centos8-2
-    template_name: centos-8
+    template_name: centos-stream-8
     groups:
       - k3s_server
 
   - name: centos8-3
-    template_name: centos-8
+    template_name: centos-stream-8
     groups:
       - k3s_server
 
   - name: centos8-4
-    template_name: centos-8
+    template_name: centos-stream-8
     groups:
       - k3s_agent
 
   - name: centos8-5
-    template_name: centos-8
+    template_name: centos-stream-8
     groups:
       - k3s_agent
       - scale_up_host
