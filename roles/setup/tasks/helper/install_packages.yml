@@ -2,6 +2,7 @@
 - name: Install pip (Ubuntu)
   when: ansible_distribution == 'Ubuntu'
   ansible.builtin.apt:
+    update_cache: yes
     pkg:
       - python3-pip
 
