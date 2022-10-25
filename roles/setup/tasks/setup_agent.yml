@@ -5,6 +5,12 @@
     - ansible_lsb.id == 'Raspbian'
   include_tasks: helper/create_cgroup_memory.yml
 
+- name: Disable firewalld (CentOS only)
+  when: ansible_distribution == 'CentOS'
+  ansible.builtin.systemd:
+    state: stopped
+    name: "firewalld"
+
 - name: Include tasks file for downloading install script
   include_tasks: helper/download_install_script.yml
 
