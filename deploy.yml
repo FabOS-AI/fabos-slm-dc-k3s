@@ -13,6 +13,8 @@
   run_once: yes
   gather_facts: yes
   become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   tasks:
     - name: Include K3s deploy.yml
       include_role:
