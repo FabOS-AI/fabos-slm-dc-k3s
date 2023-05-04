@@ -4,11 +4,12 @@
     username: "{{ lookup('hashi_vault', '{{ vault_lookup_base_info }} secret=resources/data/{{ item.ID }}:username') }}"
     password: "{{ lookup('hashi_vault', '{{ vault_lookup_base_info }} secret=resources/data/{{ item.ID }}:password') }}"
   no_log: true
+  ignore_errors: true
 
 
 - name: Setup ansible inventory
   add_host:
-    name: "{{ item.Address }}"
+    name: "{{ ip_address }}"
     groups: "{{ item.ServiceTags }}"
     ansible_connection: ssh
     ansible_ssh_user: "{{ username }}"
@@ -18,3 +19,7 @@
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
   no_log: true
   changed_when: false
+  when:
+    - ip_address is defined
+    - username is defined
+    - password is defined

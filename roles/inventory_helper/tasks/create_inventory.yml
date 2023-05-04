@@ -8,8 +8,7 @@
   no_log: true
 - assert:
     that:
-#      - resource_id
-      - service_name
+      - resource_id
       - (consul_url is defined) and (consul_url|length > 0)
       - (consul_token is defined) and (consul_token|length > 0)
       - (vault_url is defined) and (vault_url|length > 0)
@@ -19,19 +18,9 @@
 - set_fact:
     vault_lookup_base_info: "url={{ vault_url }} auth_method=approle role_id={{ vault_approle_role_id }} secret_id={{ vault_approle_secret_id }}"
 
-#- set_fact:
-#    filter_exp: "{{ 'ID==\"' + resource_id + '\"' | urlencode() }}"
-#- name: "Get Node info of resource with id '{{ resource_id }}'"
-#  uri:
-#    url: "{{ consul_url }}/v1/catalog/nodes?filter={{ filter_exp }}"
-#    method: GET
-#    status_code: 200
-#    validate_certs: no
-#    headers:
-#      Authorization: "Bearer {{ consul_token }}"
-#  register: output_get_node
-#- set_fact:
-#    node_info: "{{ output_get_node.json | first }}"
+- name: "Compose service id from resource id"
+  set_fact:
+    service_name: "k3s_{{ resource_id }}"
 
 - name: "Get Service nodes of '{{ service_name }}'"
   uri:

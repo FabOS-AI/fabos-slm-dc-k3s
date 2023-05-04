@@ -4,8 +4,8 @@
     that: "{{ item.name }} is defined"
     fail_msg: "Missing variable '{{ item.name }}': {{ item.description }}"
   with_items:
-    - { name: "service_id",             description: "Id of the service instance that will be deployed." }
-    - { name: "definitions",             description: "Content of object definition." }
+    - { name: "service_id",                description: "Id of the service instance that will be deployed." }
+    - { name: "manifest_file",             description: "Content of the manifest file." }
 
 - name: Create namespace
   kubernetes.core.k8s:
@@ -21,7 +21,6 @@
 - name: Deploy
   kubernetes.core.k8s:
     state: present
-    definition: "{{ item }}"
+    definition: "{{ manifest_file }}"
     kubeconfig: /etc/rancher/k3s/k3s.yaml
     namespace: "{{ service_id }}"
-  loop: "{{ definitions }}"
