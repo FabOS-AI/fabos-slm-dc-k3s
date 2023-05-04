@@ -24,7 +24,7 @@
         name: inventory_helper
       vars:
         service_name: "{{ resource_to_add_service_id }}"
-        extra_groups: ["target_host"]
+        extra_groups: ["target_host", "scale_down_host"]
     - name: List group 'target_host'
       debug:
         msg: "{{ groups['target_host'] }}"
