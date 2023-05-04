@@ -4,9 +4,9 @@
   connection: local
   gather_facts: no
   tasks:
-    - include_role:
+    - name: Use inventory Helper to setup ansible inventory
+      ansible.builtin.include_role:
         name: inventory_helper
-        tasks_from: create_inventory.yml
 
 - name: Uninstall k3s server/agent
   hosts: k3s_server:k3s_agent

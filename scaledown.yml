@@ -4,13 +4,30 @@
   connection: local
   gather_facts: no
   tasks:
-    - include_role:
-        name: inventory_helper
-        tasks_from: create_inventory.yml
+    - name: Check that all required variables are available
+      ansible.builtin.assert:
+        that:
+          - (keycloak_token is defined) and (keycloak_token|length > 0)
+          - (supported_connection_types is defined) and (supported_connection_types|length > 0)
+          - (resource_service_id is defined) and (resource_service_id|length > 0)
+          - (resource_to_add_service_id is defined) and (resource_to_add_service_id|length > 0)
 
-    - include_role:
+    - name: (1) Use inventory Helper to setup cluster ansible inventory
+      ansible.builtin.import_role:
         name: inventory_helper
-        tasks_from: create_single_host_inventory.yml
+      vars:
+        service_name: "{{ resource_service_id }}"
+        extra_groups: []
+
+    - name: (2) Use inventory Helper to setup target_host ansible inventory
+      ansible.builtin.import_role:
+        name: inventory_helper
+      vars:
+        service_name: "{{ resource_to_add_service_id }}"
+        extra_groups: ["target_host"]
+    - name: List group 'target_host'
+      debug:
+        msg: "{{ groups['target_host'] }}"
 
 - name: Scale Down (Agent)
   hosts: target_host
